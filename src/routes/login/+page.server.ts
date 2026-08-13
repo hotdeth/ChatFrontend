@@ -1,3 +1,4 @@
+import { BASE_URL } from "$env/static/private";
 import { redirect, type Actions } from "@sveltejs/kit";
 
 export const actions: Actions = {
@@ -20,7 +21,7 @@ export const actions: Actions = {
     }
 
     try {
-      const res = await fetch("http://localhost:8080/auth/login", {
+      const res = await fetch(`${BASE_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -51,8 +52,12 @@ export const actions: Actions = {
 
 
       cookies.set("user", JSON.stringify(data.user), {
-        path: "/"
-      })
+        path: "/",
+        httpOnly: true,
+        sameSite: "lax",
+        secure: false
+      });
+
 
       // Access token
       cookies.set("access_token", data.access_token, {

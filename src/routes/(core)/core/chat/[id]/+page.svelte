@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { PUBLIC_BASE_URL_WS } from "$env/static/public";
   import { onMount } from "svelte";
 
   let { data } = $props();
@@ -43,7 +44,7 @@
     const token = data.token;
 
     socket = new WebSocket(
-      `ws://localhost:8080/ws?id=${currentUserId}&token=${token}`,
+      `ws://${PUBLIC_BASE_URL_WS}/ws?id=${currentUserId}&token=${token}`,
     );
 
     socket.onopen = () => {
