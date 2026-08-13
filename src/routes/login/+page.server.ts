@@ -47,6 +47,13 @@ export const actions: Actions = {
         };
       }
 
+
+
+
+      cookies.set("user", JSON.stringify(data.user), {
+        path: "/"
+      })
+
       // Access token
       cookies.set("access_token", data.access_token, {
         path: "/",

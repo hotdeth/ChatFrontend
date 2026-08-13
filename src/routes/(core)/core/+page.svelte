@@ -1,6 +1,6 @@
 <script lang="ts">
   let { data } = $props();
-
+  import { enhance } from "$app/forms";
   let activeTab = $state<"all" | "friends">("all");
 
   const getInitial = (name: string) => {
@@ -8,18 +8,23 @@
   };
 
   const users = $derived(
-    activeTab === "all" ? data.users ?? [] : data.friends ?? []
+    activeTab === "all" ? (data.users ?? []) : (data.friends ?? []),
   );
 </script>
 
 <div class="min-h-screen bg-gray-100">
+  <a href="/">Home</a>
+  <a href="/core/pending">requests</a>
+
   <div
     class="mx-auto flex min-h-screen w-full max-w-2xl flex-col bg-white shadow-sm"
   >
     <!-- Header -->
     <header class="border-b border-gray-200">
       <div class="px-5 py-4">
-        <h1 class="text-xl font-bold text-gray-900">Messages</h1>
+        <h1 class="text-xl font-bold text-gray-900">
+          Messages for {data.user.public_id}
+        </h1>
 
         <p class="mt-1 text-sm text-gray-500">
           Connect and chat with your friends
@@ -95,8 +100,7 @@
       {#if users.length}
         <div class="divide-y divide-gray-100">
           {#each users as user}
-            <a
-              href={`/core/chat/${user.id}`}
+            <div
               class="group flex items-center gap-4 px-5 py-4 transition
                      hover:bg-gray-50 active:bg-gray-100"
             >
@@ -127,23 +131,24 @@
                   @{user.username}
                 </p>
               </div>
+              <div>
+                <form action="?/follow" method="POST" use:enhance>
+                  <input type="hidden" name="receive_id" value={user.id} />
+                  <button
+                    onclick={(e) => e.stopPropagation()}
+                    type="submit"
+                    class="bg-blue-600 rounded text-white px-2">follow</button
+                  >
+                </form>
+                <a
+                  href="/core/chat/{user.id}"
+                  type="submit"
+                  class="bg-blue-600 rounded text-white px-2">Message</a
+                >
+              </div>
 
               <!-- Arrow -->
-              <svg
-                class="h-5 w-5 shrink-0 text-gray-300 transition
-                       group-hover:translate-x-0.5 group-hover:text-gray-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </a>
+            </div>
           {/each}
         </div>
       {:else}
@@ -171,9 +176,7 @@
           </div>
 
           <h2 class="text-lg font-semibold text-gray-900">
-            {activeTab === "friends"
-              ? "No friends yet"
-              : "No users found"}
+            {activeTab === "friends" ? "No friends yet" : "No users found"}
           </h2>
 
           <p class="mt-1 text-sm text-gray-500">

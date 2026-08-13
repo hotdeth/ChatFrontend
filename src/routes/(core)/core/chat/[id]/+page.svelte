@@ -8,25 +8,43 @@
   let messages = $state<any[]>([]);
   let connected = $state(false);
 
+  // المستخدم الحالي
+  const currentUserId = String(data.user.id);
+
+  // الطرف الآخر
+  const receiverId = String(data.userID);
+
   function sendMessage() {
     if (!message.trim() || !socket || socket.readyState !== WebSocket.OPEN) {
       return;
     }
 
-    socket.send(
-      JSON.stringify({
-        receiver_id: data.userID,
-        message: message.trim(),
-      }),
-    );
+    const text = message.trim();
+
+    const outgoingMessage = {
+      type: "offer",
+      sender: currentUserId,
+      receiver: receiverId,
+      data: {
+        sdp: text,
+      },
+    };
+
+    // أظهر الرسالة مباشرة عند المرسل
+    messages = [...messages, outgoingMessage];
+
+    // أرسلها للسيرفر
+    socket.send(JSON.stringify(outgoingMessage));
 
     message = "";
   }
 
   onMount(() => {
-    const userId = 1 
-    const token = data.token 
-    socket = new WebSocket(`ws://localhost:8080/ws/${userId}&token=${token}`);
+    const token = data.token;
+
+    socket = new WebSocket(
+      `ws://localhost:8080/ws?id=${currentUserId}&token=${token}`,
+    );
 
     socket.onopen = () => {
       connected = true;
@@ -36,6 +54,15 @@
     socket.onmessage = (event) => {
       try {
         const parsedData = JSON.parse(event.data);
+
+        console.log("Received:", parsedData);
+
+        // إذا كان السيرفر يعيد لنا رسالتنا مرة أخرى
+        // لا نضيفها مرة ثانية
+        if (String(parsedData.sender) === currentUserId) {
+          return;
+        }
+
         messages = [...messages, parsedData];
       } catch (error) {
         console.error("Invalid WebSocket message:", error);
@@ -57,8 +84,6 @@
   });
 </script>
 
-<!-- باقي كود HTML (الـ UI) يبقى كما هو دون تغيير -->
-
 <div class="flex min-h-screen flex-col bg-gray-100">
   <!-- Header -->
   <header class="flex items-center gap-3 border-b bg-white px-5 py-4">
@@ -68,15 +93,19 @@
       class="flex h-11 w-11 items-center justify-center rounded-full
              bg-blue-600 font-semibold text-white"
     >
-      <!-- {data.user.name?.charAt(0).toUpperCase()} -->
+      {data.user?.name?.charAt(0)?.toUpperCase() || "U"}
     </div>
 
     <div>
       <h1 class="font-semibold text-gray-900">
-        <!-- {data.user.name} -->
+        {data.user?.name || "User"}
       </h1>
 
-      <p class="text-xs {connected ? 'text-green-500' : 'text-gray-400'}">
+      <p
+        class:text-green-500={connected}
+        class:text-gray-400={!connected}
+        class="text-xs"
+      >
         {connected ? "Online" : "Connecting..."}
       </p>
     </div>
@@ -85,18 +114,21 @@
   <!-- Messages -->
   <main class="flex-1 space-y-3 overflow-y-auto p-5">
     {#each messages as msg}
-      <div
-        class="flex {msg.sender_id === data.currentUser.public_id
-          ? 'justify-end'
-          : 'justify-start'}"
-      >
+      {@const isMine = String(msg.sender) === currentUserId}
+
+      <div class:flex-row-reverse={isMine} class="flex">
         <div
-          class="max-w-[75%] rounded-2xl px-4 py-2
-            {msg.sender_id === data.currentUser.public_id
-            ? 'rounded-br-md bg-blue-600 text-white'
-            : 'rounded-bl-md bg-white text-gray-900 shadow-sm'}"
+          class:max-w-[75%]={true}
+          class:rounded-br-md={isMine}
+          class:rounded-bl-md={!isMine}
+          class:bg-blue-600={isMine}
+          class:text-white={isMine}
+          class:bg-white={!isMine}
+          class:text-gray-900={!isMine}
+          class:shadow-sm={!isMine}
+          class="rounded-2xl px-4 py-2"
         >
-          {msg.message}
+          {msg.data?.sdp || msg.message || ""}
         </div>
       </div>
     {/each}
