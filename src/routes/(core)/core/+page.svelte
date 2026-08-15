@@ -12,53 +12,51 @@
   );
 </script>
 
-<div class="min-h-screen bg-gray-100">
-  <a href="/">Home</a>
-  <a href="/core/pending">requests</a>
-
+<div class="min-h-screen bg-slate-50 text-slate-900 font-sans">
+  <!-- Navbar -->
+  <!-- Main Content -->
   <div
-    class="mx-auto flex min-h-screen w-full max-w-2xl flex-col bg-white shadow-sm"
+    class="mx-auto flex min-h-[calc(100vh-60px)] w-full max-w-2xl flex-col bg-white shadow-sm sm:border-x sm:border-slate-200"
   >
     <!-- Header -->
-    <header class="border-b border-gray-200">
-      <div class="px-5 py-4">
-        <h1 class="text-xl font-bold text-gray-900">
-          Messages for {data.user.public_id}
+    <header class="pt-6 pb-2">
+      <div class="px-5 mb-4">
+        <h1 class="text-2xl font-bold tracking-tight text-slate-900">
+          Messages
         </h1>
-
-        <p class="mt-1 text-sm text-gray-500">
-          Connect and chat with your friends
+        <p class="mt-1 text-sm text-slate-500">
+          Connect and chat with {data.user.public_id}
         </p>
       </div>
 
       <!-- Tabs -->
-      <div class="flex px-5">
+      <div class="flex px-5 border-b border-slate-200">
         <button
           type="button"
           onclick={() => (activeTab = "all")}
-          class={`relative flex-1 py-3 text-sm font-semibold transition
+          class={`relative flex-1 pb-3 text-sm font-medium transition-colors
             ${
               activeTab === "all"
                 ? "text-blue-600"
-                : "text-gray-500 hover:text-gray-700"
+                : "text-slate-500 hover:text-slate-700"
             }`}
         >
-          All
-
-          <span
-            class={`ml-1 rounded-full px-2 py-0.5 text-xs
-              ${
-                activeTab === "all"
-                  ? "bg-blue-100 text-blue-600"
-                  : "bg-gray-100 text-gray-500"
-              }`}
-          >
-            {data.users?.length ?? 0}
-          </span>
-
+          <div class="flex items-center justify-center gap-2">
+            All Users
+            <span
+              class={`rounded-full px-2 py-0.5 text-xs font-semibold transition-colors
+                ${
+                  activeTab === "all"
+                    ? "bg-blue-100 text-blue-700"
+                    : "bg-slate-100 text-slate-600"
+                }`}
+            >
+              {data.users?.length ?? 0}
+            </span>
+          </div>
           {#if activeTab === "all"}
             <span
-              class="absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-blue-600"
+              class="absolute bottom-0 left-0 right-0 h-0.5 rounded-t-full bg-blue-600"
             ></span>
           {/if}
         </button>
@@ -66,102 +64,147 @@
         <button
           type="button"
           onclick={() => (activeTab = "friends")}
-          class={`relative flex-1 py-3 text-sm font-semibold transition
+          class={`relative flex-1 pb-3 text-sm font-medium transition-colors
             ${
               activeTab === "friends"
                 ? "text-blue-600"
-                : "text-gray-500 hover:text-gray-700"
+                : "text-slate-500 hover:text-slate-700"
             }`}
         >
-          Friends
-
-          <span
-            class={`ml-1 rounded-full px-2 py-0.5 text-xs
-              ${
-                activeTab === "friends"
-                  ? "bg-blue-100 text-blue-600"
-                  : "bg-gray-100 text-gray-500"
-              }`}
-          >
-            {data.friends?.length ?? 0}
-          </span>
-
+          <div class="flex items-center justify-center gap-2">
+            Friends
+            <span
+              class={`rounded-full px-2 py-0.5 text-xs font-semibold transition-colors
+                ${
+                  activeTab === "friends"
+                    ? "bg-blue-100 text-blue-700"
+                    : "bg-slate-100 text-slate-600"
+                }`}
+            >
+              {data.friends?.length ?? 0}
+            </span>
+          </div>
           {#if activeTab === "friends"}
             <span
-              class="absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-blue-600"
+              class="absolute bottom-0 left-0 right-0 h-0.5 rounded-t-full bg-blue-600"
             ></span>
           {/if}
         </button>
       </div>
     </header>
 
-    <!-- Users -->
-    <main class="flex-1">
+    <!-- Users List -->
+    <main class="flex-1 pb-10">
       {#if users.length}
-        <div class="divide-y divide-gray-100">
+        <div class="divide-y divide-slate-100">
           {#each users as user}
             <div
-              class="group flex items-center gap-4 px-5 py-4 transition
-                     hover:bg-gray-50 active:bg-gray-100"
+              class="group flex flex-col sm:flex-row sm:items-center gap-4 px-5 py-4 transition-all hover:bg-slate-50"
             >
-              <!-- Avatar -->
-              <div
-                class="flex h-12 w-12 shrink-0 items-center justify-center
-                       rounded-full bg-blue-600 text-lg font-semibold text-white
-                       shadow-sm transition group-hover:bg-blue-700"
-              >
-                {getInitial(user.name)}
-              </div>
-
-              <!-- User information -->
-              <div class="min-w-0 flex-1">
-                <div class="flex items-center justify-between gap-3">
-                  <h2 class="truncate font-semibold text-gray-900">
-                    {user.name}
-                  </h2>
-
-                  {#if user.updated_at}
-                    <span class="shrink-0 text-xs text-gray-400">
-                      {new Date(user.updated_at).toLocaleDateString()}
-                    </span>
-                  {/if}
+              <!-- User Info Section -->
+              <div class="flex items-center gap-4 flex-1 min-w-0">
+                <!-- Avatar -->
+                <div
+                  class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-xl font-bold text-white shadow-sm ring-2 ring-white transition-transform group-hover:scale-105"
+                >
+                  {getInitial(user.name)}
                 </div>
 
-                <p class="mt-1 truncate text-sm text-gray-500">
-                  @{user.username}
-                </p>
-              </div>
-              <div>
-                <form action="?/follow" method="POST" use:enhance>
-                  <input type="hidden" name="receive_id" value={user.id} />
-                  <button
-                    onclick={(e) => e.stopPropagation()}
-                    type="submit"
-                    class="bg-blue-600 rounded text-white px-2">follow</button
-                  >
-                </form>
-                <a
-                  href="/core/chat/{user.id}"
-                  type="submit"
-                  class="bg-blue-600 rounded text-white px-2">Message</a
-                >
+                <!-- Details -->
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-2">
+                    <h2 class="truncate font-semibold text-slate-900 text-base">
+                      {user.name}
+                    </h2>
+                    {#if user.updated_at}
+                      <span
+                        class="shrink-0 text-[11px] font-medium text-slate-400 mt-0.5"
+                      >
+                        • {new Date(user.updated_at).toLocaleDateString(
+                          undefined,
+                          { month: "short", day: "numeric" },
+                        )}
+                      </span>
+                    {/if}
+                  </div>
+                  <p class="truncate text-sm text-slate-500">
+                    @{user.username}
+                  </p>
+                </div>
               </div>
 
-              <!-- Arrow -->
+              <!-- Actions Section -->
+              <div class="flex items-center gap-2 pl-18 sm:pl-0">
+                <!-- إخفاء زر المتابعة إذا كنا في تبويب الأصدقاء -->
+                {#if activeTab === "all"}
+                  <form
+                    action="?/follow"
+                    method="POST"
+                    use:enhance
+                    class="flex-1 sm:flex-none"
+                  >
+                    <input type="hidden" name="receive_id" value={user.id} />
+                    <button
+                      onclick={(e) => e.stopPropagation()}
+                      type="submit"
+                      class="w-full flex items-center justify-center gap-1.5 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-200 active:scale-95"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        ><path
+                          d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
+                        /><circle cx="9" cy="7" r="4" /><line
+                          x1="19"
+                          x2="19"
+                          y1="8"
+                          y2="14"
+                        /><line x1="22" x2="16" y1="11" y2="11" /></svg
+                      >
+                      Follow
+                    </button>
+                  </form>
+                {/if}
+
+                <a
+                  href="/core/chat/{user.id}"
+                  class="flex-1 sm:flex-none flex items-center justify-center gap-1.5 rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 active:scale-95"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    ><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" /></svg
+                  >
+                  Message
+                </a>
+              </div>
             </div>
           {/each}
         </div>
       {:else}
         <!-- Empty state -->
         <div
-          class="flex flex-col items-center justify-center px-6 py-20 text-center"
+          class="flex flex-col items-center justify-center px-6 py-24 text-center animate-in fade-in duration-500"
         >
           <div
-            class="mb-4 flex h-16 w-16 items-center justify-center
-                   rounded-full bg-gray-100"
+            class="mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-slate-50 ring-8 ring-slate-50/50"
           >
             <svg
-              class="h-8 w-8 text-gray-400"
+              class="h-10 w-10 text-slate-300"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -174,15 +217,13 @@
               />
             </svg>
           </div>
-
-          <h2 class="text-lg font-semibold text-gray-900">
+          <h2 class="text-lg font-semibold text-slate-900">
             {activeTab === "friends" ? "No friends yet" : "No users found"}
           </h2>
-
-          <p class="mt-1 text-sm text-gray-500">
+          <p class="mt-2 text-sm text-slate-500 max-w-sm">
             {activeTab === "friends"
-              ? "Your friends will appear here."
-              : "There are no users to display."}
+              ? "When you follow people and they follow back, they'll show up here."
+              : "Looks like there are no users on the platform right now."}
           </p>
         </div>
       {/if}
