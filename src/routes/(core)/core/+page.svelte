@@ -1,6 +1,7 @@
 <script lang="ts">
   let { data } = $props();
   import { enhance } from "$app/forms";
+  import { UserSolid } from "flowbite-svelte-icons";
   let activeTab = $state<"all" | "friends">("all");
 
   const getInitial = (name: string) => {
@@ -13,23 +14,10 @@
 </script>
 
 <div class="min-h-screen bg-slate-50 text-slate-900 font-sans">
-  <!-- Navbar -->
-  <!-- Main Content -->
   <div
     class="mx-auto flex min-h-[calc(100vh-60px)] w-full max-w-2xl flex-col bg-white shadow-sm sm:border-x sm:border-slate-200"
   >
-    <!-- Header -->
     <header class="pt-6 pb-2">
-      <div class="px-5 mb-4">
-        <h1 class="text-2xl font-bold tracking-tight text-slate-900">
-          Messages
-        </h1>
-        <p class="mt-1 text-sm text-slate-500">
-          Connect and chat with {data.user.public_id}
-        </p>
-      </div>
-
-      <!-- Tabs -->
       <div class="flex px-5 border-b border-slate-200">
         <button
           type="button"

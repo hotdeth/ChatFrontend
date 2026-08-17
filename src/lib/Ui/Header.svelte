@@ -1,12 +1,122 @@
-<nav class="sticky top-0 z-20 bg-white/80 backdrop-blur-lg border-b border-slate-200">
-  <div class="mx-auto flex max-w-2xl items-center justify-between px-5 py-3">
-    <a href="/" class="flex items-center gap-2 text-slate-700 hover:text-blue-600 transition-colors font-semibold">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      Home
+<script lang="ts">
+  import { page } from "$app/state";
+  import {
+    UsersGroupSolid,
+    BellRingSolid,
+    MessagesSolid,
+    UserSolid,
+    JarSolid,
+    XSolid,
+  } from "flowbite-svelte-icons";
+
+  interface Link {
+    name: string;
+    href: string;
+    icon: typeof UsersGroupSolid;
+  }
+
+  const links: Link[] = [
+    {
+      name: "Friends",
+      href: "/core/friends",
+      icon: UsersGroupSolid,
+    },
+    {name:"Requests",
+    href:"/core/pending",
+    icon:BellRingSolid},
+    {
+      name: "Chats",
+      href: "/core/chats",
+      icon: MessagesSolid,
+    },
+    {
+      name: "Users",
+      href: "/core/users",
+      icon: UserSolid,
+    },
+  ];
+
+  let menuOpen = false;
+
+  const isActive = (href: string) => page.url.pathname === href;
+</script>
+
+<nav
+  class="sticky top-0 z-20 border-b border-slate-200 bg-white/80 backdrop-blur-lg"
+>
+  <div
+    class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8"
+  >
+    <!-- Logo -->
+    <a
+      href="/core"
+      class="flex items-center gap-2 text-lg font-bold text-slate-900"
+    >
+      <div
+        class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-white"
+      >
+        <MessagesSolid class="h-5 w-5" />
+      </div>
+
+      <span>Social</span>
     </a>
-    <a href="/core/pending" class="relative flex items-center justify-center p-2 text-slate-500 hover:bg-slate-100 hover:text-blue-600 rounded-full transition-colors">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-      <span class="absolute top-1.5 right-1.5 flex h-2.5 w-2.5 rounded-full bg-red-500 border-2 border-white"></span>
-    </a>
+
+    <!-- Desktop navigation -->
+    <div class="hidden items-center gap-1 md:flex">
+      {#each links as link}
+        {@const Icon = link.icon}
+
+        <a
+          href={link.href}
+          class={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+            isActive(link.href)
+              ? "bg-blue-100 text-blue-700"
+              : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+          }`}
+        >
+          <Icon class="h-5 w-5" />
+          <span>{link.name}</span>
+        </a>
+      {/each}
+    </div>
+
+    <!-- Mobile menu button -->
+    <button
+      type="button"
+      class="inline-flex items-center justify-center rounded-lg p-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 md:hidden"
+      aria-label={menuOpen ? "Close menu" : "Open menu"}
+      aria-expanded={menuOpen}
+      onclick={() => (menuOpen = !menuOpen)}
+    >
+      {#if menuOpen}
+        <XSolid class="h-6 w-6" />
+      {:else}
+        <JarSolid class="h-6 w-6" />
+      {/if}
+    </button>
   </div>
+
+  <!-- Mobile navigation -->
+  {#if menuOpen}
+    <div class="border-t border-slate-200 bg-white px-4 py-3 md:hidden">
+      <div class="flex flex-col gap-1">
+        {#each links as link}
+          {@const Icon = link.icon}
+
+          <a
+            href={link.href}
+            onclick={() => (menuOpen = false)}
+            class={`flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors ${
+              isActive(link.href)
+                ? "bg-blue-100 text-blue-700"
+                : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+            }`}
+          >
+            <Icon class="h-5 w-5" />
+            <span>{link.name}</span>
+          </a>
+        {/each}
+      </div>
+    </div>
+  {/if}
 </nav>

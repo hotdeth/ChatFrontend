@@ -23,7 +23,7 @@ export const actions: Actions = {
       if (!res.ok) {
         return { error: data }
       }
-      return redirect(302, '/login')
+      throw redirect(303, "/login")
     } catch (err) {
       return { error: "Internal Error" }
     }

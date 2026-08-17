@@ -81,7 +81,10 @@
         for (let msg of normalizedMsgs) {
           if (msg.data && msg.data.ciphertext) {
             try {
-              msg.data.ciphertext = await decryptMessage(msg.data.ciphertext, shared);
+              msg.data.ciphertext = await decryptMessage(
+                msg.data.ciphertext,
+                shared,
+              );
             } catch (e) {
               console.error("فشل فك تشفير رسالة قديمة", e);
               msg.data.ciphertext = " [رسالة مشفرة لا يمكن قراءتها]";
@@ -101,7 +104,7 @@
     );
 
     socket.onopen = () => {
-      isConnected = true; 
+      isConnected = true;
     };
 
     socket.onmessage = async (event) => {
@@ -115,7 +118,7 @@
           if (friendId === receiverId) {
             isReceiverOnline = status === "online";
           }
-          return; 
+          return;
         }
 
         if (shared && parsedData.data && parsedData.data.ciphertext) {
@@ -139,7 +142,7 @@
 
     socket.onerror = (error) => console.error("WebSocket error:", error);
     socket.onclose = () => {
-      isConnected = false; 
+      isConnected = false;
       isReceiverOnline = false;
     };
 
@@ -186,7 +189,7 @@
 
 <div class="flex h-screen flex-col bg-slate-50/50 sm:bg-gray-100">
   <div
-    class="mx-auto flex h-full w-full max-w-2xl flex-col bg-slate-50 shadow-2xl sm:border-x border-gray-200"
+    class="mx-auto flex h-[95%] w-full max-w-2xl flex-col bg-slate-50 shadow-2xl sm:border-x border-gray-200"
   >
     <header
       class="sticky top-0 z-10 flex items-center gap-4 border-b border-gray-200 bg-white/80 px-4 py-3 backdrop-blur-md"
@@ -259,7 +262,9 @@
                 ? 'rounded-2xl rounded-tr-sm bg-gradient-to-tr from-blue-600 to-indigo-600 text-white'
                 : 'rounded-2xl rounded-tl-sm border border-gray-100 bg-white text-gray-800'}"
             >
-              <p class="break-words leading-relaxed">{msg.data?.ciphertext || ""}</p>
+              <p class="break-words leading-relaxed">
+                {msg.data?.ciphertext || ""}
+              </p>
               <span
                 class="mt-1 block text-right text-[10px] font-medium tracking-wide {isMine
                   ? 'text-blue-100'
