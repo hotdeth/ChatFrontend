@@ -44,7 +44,7 @@
       try {
         parsedData = JSON.parse(parsedData);
       } catch {
-        parsedData = { sdp: parsedData };
+        parsedData = { ciphertext: parsedData };
       }
     }
 
@@ -79,12 +79,12 @@
         const normalizedMsgs = data.messages.map(normalizeMessage);
 
         for (let msg of normalizedMsgs) {
-          if (msg.data && msg.data.sdp) {
+          if (msg.data && msg.data.ciphertext) {
             try {
-              msg.data.sdp = await decryptMessage(msg.data.sdp, shared);
+              msg.data.ciphertext = await decryptMessage(msg.data.ciphertext, shared);
             } catch (e) {
               console.error("فشل فك تشفير رسالة قديمة", e);
-              msg.data.sdp = " [رسالة مشفرة لا يمكن قراءتها]";
+              msg.data.ciphertext = " [رسالة مشفرة لا يمكن قراءتها]";
             }
           }
         }
@@ -118,15 +118,15 @@
           return; 
         }
 
-        if (shared && parsedData.data && parsedData.data.sdp) {
+        if (shared && parsedData.data && parsedData.data.ciphertext) {
           try {
-            parsedData.data.sdp = await decryptMessage(
-              parsedData.data.sdp,
+            parsedData.data.ciphertext = await decryptMessage(
+              parsedData.data.ciphertext,
               shared,
             );
           } catch (e) {
             console.error("فشل فك تشفير الرسالة المستلمة", e);
-            parsedData.data.sdp = " [خطأ في فك التشفير]";
+            parsedData.data.ciphertext = " [خطأ في فك التشفير]";
           }
         }
 
@@ -165,15 +165,15 @@
     const encryptedText = await encryptMessage(text, shared);
 
     const outgoingMessage = {
-      type: "offer",
+      type: "chat_message",
       sender: currentUserId,
       receiver: receiverId,
-      data: { sdp: encryptedText },
+      data: { ciphertext: encryptedText },
       created_at: now,
     };
     const localDisplayMessage = {
       ...outgoingMessage,
-      data: { sdp: text },
+      data: { ciphertext: text },
     };
 
     messages = [...messages, localDisplayMessage];
@@ -259,7 +259,7 @@
                 ? 'rounded-2xl rounded-tr-sm bg-gradient-to-tr from-blue-600 to-indigo-600 text-white'
                 : 'rounded-2xl rounded-tl-sm border border-gray-100 bg-white text-gray-800'}"
             >
-              <p class="break-words leading-relaxed">{msg.data?.sdp || ""}</p>
+              <p class="break-words leading-relaxed">{msg.data?.ciphertext || ""}</p>
               <span
                 class="mt-1 block text-right text-[10px] font-medium tracking-wide {isMine
                   ? 'text-blue-100'
