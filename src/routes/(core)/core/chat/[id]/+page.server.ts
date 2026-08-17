@@ -23,7 +23,6 @@ export const load: PageServerLoad = async ({ params, cookies, fetch }) => {
     })
 
     const data1 = await res.json()
-    console.log(data1.id)
     const res2 = await fetch(`${BASE_URL}/messages?convid=${Number(data1.id)}`, {
       method: "GET", headers: {
         "Authorization": `Bearer ${cookies.get('access_token')}`,
@@ -31,13 +30,12 @@ export const load: PageServerLoad = async ({ params, cookies, fetch }) => {
     })
     const data2 = await res2.json()
     messagess = data2
-    console.log(data2)
 
 
 
 
     if (!res.ok) {
-      console.log(res)
+      console.log("err res")
     }
   } catch (err) {
     console.log(err)
