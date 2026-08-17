@@ -12,6 +12,17 @@ export const load: PageServerLoad = async ({ params, cookies, fetch }) => {
   if (userCookie) {
     user = JSON.parse(userCookie)
   }
+
+
+
+  const publicKey = await fetch(`${BASE_URL}/users/public/${params.id}`, {
+    method: "GET", headers: {
+      "Authorization": `Bearer ${cookies.get('access_token')}`,
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    },
+  })
+  const key = await publicKey.json()
   try {
     const res = await fetch(`${BASE_URL}/conv`, {
       method: "POST", headers: {
@@ -40,7 +51,7 @@ export const load: PageServerLoad = async ({ params, cookies, fetch }) => {
   } catch (err) {
     console.log(err)
   }
-  return { userID: params.id, token: cookies.get('access_token'), user: user, messages: messagess }
+  return { userID: params.id, token: cookies.get('access_token'), user: user, messages: messagess, key: key }
 }
 // try {
 //    const res = await fetch(`${BASE_URL}/messages?convid=${conv_id}`, {

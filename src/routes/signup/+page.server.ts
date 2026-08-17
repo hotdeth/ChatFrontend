@@ -16,8 +16,9 @@ export const actions: Actions = {
     const username = formData.get('username')
     const password = formData.get('password')
     const name = formData.get('name')
+    const key = formData.get('key')
     try {
-      const res = await fetch(`${BASE_URL}/auth/register`, { method: "POST", body: JSON.stringify({ username, password, name }) })
+      const res = await fetch(`${BASE_URL}/auth/register`, { method: "POST", body: JSON.stringify({ username, password, name, key }) })
       const data = await res.json()
       if (!res.ok) {
         return { error: data }

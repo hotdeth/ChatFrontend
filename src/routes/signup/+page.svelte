@@ -1,18 +1,40 @@
 <script>
   import { enhance } from "$app/forms";
+  import {
+    exportPublicKey,
+    GenerateKeyPair,
+    getPrivateKey,
+    savePrivateKey,
+  } from "$lib/Crypt";
+  import { onMount } from "svelte";
+
+  let key = $state("");
+
+  onMount(() => {
+    initializeApp();
+  });
+
+  async function initializeApp() {
+    let myPrivateKey = await getPrivateKey();
+    if (!myPrivateKey) {
+      const keys = await GenerateKeyPair();
+      myPrivateKey = keys.privateKey;
+      await savePrivateKey(myPrivateKey);
+      const publicKeyString = await exportPublicKey(keys.publicKey);
+      key = publicKeyString;
+    } else {
+      return;
+    }
+  }
 </script>
 
 <div class="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-8">
   <div class="w-full max-w-md">
     <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
       <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">
-          Create an account
-        </h1>
+        <h1 class="text-3xl font-bold text-gray-900">Create an account</h1>
 
-        <p class="mt-2 text-sm text-gray-500">
-          Sign up to get started
-        </p>
+        <p class="mt-2 text-sm text-gray-500">Sign up to get started</p>
       </div>
 
       <form action="?/signup" method="POST" use:enhance class="space-y-5">
@@ -23,7 +45,7 @@
           >
             Name
           </label>
-
+          <input type="hidden" name="key" value={key} />
           <input
             id="name"
             type="text"
