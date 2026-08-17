@@ -3,7 +3,7 @@
   import {
     deriveSharedKey,
     encryptMessage,
-    decryptMessage, 
+    decryptMessage,
     getPrivateKey,
     importPublicKey,
   } from "$lib/Crypt.js";
@@ -15,9 +15,12 @@
 
   let socket: WebSocket;
   let message = $state("");
-  let connected = $state(false);
+
+  let isConnected = $state(false);
+  let isReceiverOnline = $state(false);
+
   let messagesContainer: HTMLElement;
-  let messages = $state<any[]>([]); 
+  let messages = $state<any[]>([]);
 
   const currentUserId = String(data.user.id);
   const receiverId = String(data.userID);
@@ -81,7 +84,7 @@
               msg.data.sdp = await decryptMessage(msg.data.sdp, shared);
             } catch (e) {
               console.error("فشل فك تشفير رسالة قديمة", e);
-              msg.data.sdp = "🔒 [رسالة مشفرة لا يمكن قراءتها]";
+              msg.data.sdp = " [رسالة مشفرة لا يمكن قراءتها]";
             }
           }
         }
@@ -98,16 +101,21 @@
     );
 
     socket.onopen = () => {
-      connected = true;
+      isConnected = true; 
     };
 
     socket.onmessage = async (event) => {
       try {
         const parsedData = JSON.parse(event.data);
-        if (String(parsedData.sender) === currentUserId) return;
 
-        if (!parsedData.created_at) {
-          parsedData.created_at = new Date().toISOString();
+        if (parsedData.type === "presence_update") {
+          const friendId = parsedData.sender;
+          const status = parsedData.data.status; // "online" أو "offline"
+
+          if (friendId === receiverId) {
+            isReceiverOnline = status === "online";
+          }
+          return; 
         }
 
         if (shared && parsedData.data && parsedData.data.sdp) {
@@ -118,7 +126,7 @@
             );
           } catch (e) {
             console.error("فشل فك تشفير الرسالة المستلمة", e);
-            parsedData.data.sdp = "🔒 [خطأ في فك التشفير]";
+            parsedData.data.sdp = " [خطأ في فك التشفير]";
           }
         }
 
@@ -131,7 +139,8 @@
 
     socket.onerror = (error) => console.error("WebSocket error:", error);
     socket.onclose = () => {
-      connected = false;
+      isConnected = false; 
+      isReceiverOnline = false;
     };
 
     return () => {
@@ -144,30 +153,27 @@
       !message.trim() ||
       !socket ||
       socket.readyState !== WebSocket.OPEN ||
-      !shared
+      !shared ||
+      !isConnected
     ) {
-      return; // تأكدنا أن shared key موجود
+      return;
     }
 
     const text = message.trim();
     const now = new Date().toISOString();
 
-    // تشفير الرسالة
     const encryptedText = await encryptMessage(text, shared);
 
-    // الرسالة التي ستُرسل عبر الشبكة (مُشفرة)
     const outgoingMessage = {
       type: "offer",
       sender: currentUserId,
       receiver: receiverId,
-      data: { sdp: encryptedText }, // تم تصحيح الخطأ هنا (استخدام المتغير الصحيح)
+      data: { sdp: encryptedText },
       created_at: now,
     };
-
-    // الرسالة التي ستُعرض في الشاشة محلياً (نص مقروء للمرسل)
     const localDisplayMessage = {
       ...outgoingMessage,
-      data: { sdp: text }, // نظهر النص الأصلي للمرسل
+      data: { sdp: text },
     };
 
     messages = [...messages, localDisplayMessage];
@@ -178,7 +184,6 @@
   }
 </script>
 
-<!-- قسم HTML يبقى كما هو بدون تغيير -->
 <div class="flex h-screen flex-col bg-slate-50/50 sm:bg-gray-100">
   <div
     class="mx-auto flex h-full w-full max-w-2xl flex-col bg-slate-50 shadow-2xl sm:border-x border-gray-200"
@@ -210,7 +215,7 @@
       >
         {data.user?.name?.charAt(0)?.toUpperCase() || "U"}
         <div
-          class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white {connected
+          class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white {isReceiverOnline
             ? 'bg-green-500'
             : 'bg-gray-400'}"
         ></div>
@@ -221,11 +226,11 @@
           {data.user?.name || "User"}
         </h1>
         <p
-          class="truncate text-xs font-medium {connected
+          class="truncate text-xs font-medium {isReceiverOnline
             ? 'text-green-600'
             : 'text-gray-500'}"
         >
-          {connected ? "Online" : "Connecting..."}
+          {isReceiverOnline ? "Online" : "Offline"}
         </p>
       </div>
     </header>
@@ -283,14 +288,14 @@
             bind:value={message}
             type="text"
             placeholder="Type your message..."
-            disabled={!connected || !shared}
+            disabled={!isConnected || !shared}
             class="w-full rounded-3xl border border-gray-300 bg-gray-50/50 px-5 py-3.5 pr-12 text-sm text-gray-900 outline-none transition-all focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 disabled:cursor-not-allowed disabled:bg-gray-100"
           />
         </div>
 
         <button
           type="submit"
-          disabled={!connected || !message.trim() || !shared}
+          disabled={!isConnected || !message.trim() || !shared}
           class="group flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white shadow-md transition-all hover:bg-indigo-600 hover:shadow-lg active:scale-95 disabled:pointer-events-none disabled:bg-gray-300 disabled:shadow-none"
         >
           <svg
