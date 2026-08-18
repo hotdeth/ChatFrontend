@@ -1,5 +1,6 @@
 import type { Actions } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
+import { BASE_URL } from "$env/static/private";
 
 
 export const load: PageServerLoad = async ({ fetch, cookies }) => {
@@ -8,7 +9,7 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
   if (userCookie) {
     user = JSON.parse(userCookie)
   }
-  const res1 = await fetch('http://localhost:8080/users', {
+  const res1 = await fetch(`${BASE_URL}/users`, {
     method: "GET", headers: {
       "Authorization": `Bearer ${cookies.get('access_token')}`
     }
@@ -28,7 +29,7 @@ export const actions: Actions = {
     const message = String(formData.get('message'))
     console.log(id)
     try {
-      const res = await fetch('http://localhost:8080/friend/request', {
+      const res = await fetch(`${BASE_URL}/friend/request`, {
         method: "POST", headers: {
           "Authorization": `Bearer ${session}`,
           "Content-Type": "application/json",
