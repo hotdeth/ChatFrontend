@@ -10,7 +10,6 @@
   import { onMount, tick } from "svelte";
 
   let { data } = $props();
-
   let shared = $state<CryptoKey | null>(null);
 
   let socket: WebSocket;

@@ -7,9 +7,9 @@
     MessagesSolid,
     UserSolid,
     BarsOutline,
-    ClockSolid,
     HomeSolid,
     CloseOutline,
+    PaperClipOutline,
   } from "flowbite-svelte-icons";
 
   interface Link {
@@ -23,6 +23,7 @@
     { name: "Friends", href: "/home/friends", icon: UsersGroupSolid },
     { name: "Requests", href: "/home/pending", icon: BellRingSolid },
     { name: "Users", href: "/home/users", icon: UserSolid },
+    { name: "Chats", href: "/home/chats", icon: PaperClipOutline },
   ];
 
   let menuOpen = $state(false);
