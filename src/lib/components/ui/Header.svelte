@@ -1,14 +1,15 @@
 <script lang="ts">
   import { page } from "$app/state";
-  import { enhance } from "$app/forms";
+  import { slide } from "svelte/transition"; // Added smooth transition
   import {
     UsersGroupSolid,
     BellRingSolid,
     MessagesSolid,
     UserSolid,
-    JarSolid,
-    XSolid,
+    BarsOutline,
+    ClockSolid,
     HomeSolid,
+    CloseOutline,
   } from "flowbite-svelte-icons";
 
   interface Link {
@@ -18,32 +19,19 @@
   }
 
   const links: Link[] = [
-    {
-      name: "Home",
-      href: "/home",
-      icon: HomeSolid,
-    },
-    {
-      name: "Friends",
-      href: "/home/friends",
-      icon: UsersGroupSolid,
-    },
+    { name: "Home", href: "/home", icon: HomeSolid },
+    { name: "Friends", href: "/home/friends", icon: UsersGroupSolid },
     { name: "Requests", href: "/home/pending", icon: BellRingSolid },
-
-    {
-      name: "Users",
-      href: "/home/users",
-      icon: UserSolid,
-    },
+    { name: "Users", href: "/home/users", icon: UserSolid },
   ];
 
-  let menuOpen = false;
+  let menuOpen = $state(false);
 
   const isActive = (href: string) => page.url.pathname === href;
 </script>
 
 <nav
-  class="sticky top-0 z-20 border-b border-gray-200 bg-white/90 backdrop-blur-md"
+  class="sticky top-0 z-50 border-b border-gray-200 bg-white/90 backdrop-blur-md"
 >
   <div
     class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8"
@@ -58,7 +46,6 @@
       >
         <MessagesSolid class="h-5 w-5" />
       </div>
-
       <span>Social</span>
     </a>
 
@@ -83,26 +70,28 @@
     <!-- Mobile menu button -->
     <button
       type="button"
-      class="inline-flex items-center justify-center rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-black focus:outline-none focus:ring-2 focus:ring-gray-200 md:hidden"
+      class="inline-flex items-center justify-center rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-black focus:outline-none md:hidden"
       aria-label={menuOpen ? "Close menu" : "Open menu"}
       aria-expanded={menuOpen}
       onclick={() => (menuOpen = !menuOpen)}
     >
       {#if menuOpen}
-        <XSolid class="h-5 w-5" />
+        <CloseOutline class="h-6 w-6" />
       {:else}
-        <JarSolid class="h-5 w-5" />
+        <BarsOutline class="h-6 w-6" />
       {/if}
     </button>
   </div>
 
-  <!-- Mobile navigation -->
+  <!-- Mobile navigation with smooth slide animation -->
   {#if menuOpen}
-    <div class="border-t border-gray-200 bg-white px-4 py-4 md:hidden">
+    <div
+      class="border-t border-gray-200 bg-white px-4 py-4 md:hidden shadow-lg"
+      transition:slide={{ duration: 200 }}
+    >
       <div class="flex flex-col gap-2">
         {#each links as link}
           {@const Icon = link.icon}
-
           <a
             href={link.href}
             onclick={() => (menuOpen = false)}
