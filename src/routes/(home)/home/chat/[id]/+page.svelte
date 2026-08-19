@@ -100,7 +100,7 @@
 
     const token = data.token;
     socket = new WebSocket(
-      `ws://${PUBLIC_BASE_URL_WS}/ws?id=${currentUserId}&token=${token}`,
+      `${PUBLIC_BASE_URL_WS}/ws?id=${currentUserId}&token=${token}`,
     );
 
     socket.onopen = () => {
