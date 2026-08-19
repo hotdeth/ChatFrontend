@@ -15,7 +15,7 @@ To recreate this project with the same configuration:
 
 ```sh
 # recreate this project
-bun x sv@0.15.2 create --template minimal --types ts --add tailwindcss="plugins:none" --install bun myCleanSvelte
+bun x sv@0.17.0 create --template minimal --types ts --add tailwindcss="plugins:none" --install bun .
 ```
 
 ## Developing
