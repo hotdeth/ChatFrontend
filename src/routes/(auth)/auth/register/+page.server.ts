@@ -37,7 +37,7 @@ export const actions: Actions = {
       if (!res.ok) {
         const data = await res.json();
         return {
-          error: data?.message || data?.detail || "Username is Already Used"
+          error: data?.message || "Username is Already Used"
         };
       }
     } catch (err) {

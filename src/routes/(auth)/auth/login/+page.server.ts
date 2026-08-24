@@ -42,7 +42,7 @@ export const actions: Actions = {
       }
 
       // Make sure the backend actually returned tokens
-      if (!data.access_token || !data.refresh_token) {
+      if (!data.data.access_token || !data.data.refresh_token) {
         return {
           error: "Invalid response from authentication server."
         };
@@ -50,8 +50,7 @@ export const actions: Actions = {
 
 
 
-
-      cookies.set("user", JSON.stringify(data.user), {
+      cookies.set("user", JSON.stringify(data.data.user), {
         path: "/",
         httpOnly: true,
         sameSite: "lax",
@@ -60,7 +59,7 @@ export const actions: Actions = {
 
 
       // Access token
-      cookies.set("access_token", data.access_token, {
+      cookies.set("access_token", data.data.access_token, {
         path: "/",
         httpOnly: true,
         sameSite: "lax",
@@ -69,7 +68,7 @@ export const actions: Actions = {
       });
 
       // Refresh token
-      cookies.set("refresh_token", data.refresh_token, {
+      cookies.set("refresh_token", data.data.refresh_token, {
         path: "/",
         httpOnly: true,
         sameSite: "lax",
