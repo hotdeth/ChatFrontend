@@ -1,7 +1,8 @@
 <script lang="ts">
   import { Avatar, Modal } from "flowbite-svelte";
   import { enhance } from "$app/forms";
-
+  import type { ActionData } from "../../../(auth)/auth/register/$types";
+  import { writable } from "svelte/store";
   let openChatRequest = $state(false);
   let TempUser = $state<User | null>(null);
 
@@ -15,7 +16,7 @@
     updated_at: string;
   }
 
-  let { data }: { data: { users: User[] } } = $props();
+  let { data, form }: { data: { users: User[] }; form: ActionData } = $props();
 
   const getInitials = (name: string) => {
     return name
@@ -25,7 +26,6 @@
       .slice(0, 2)
       .toUpperCase();
   };
-
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString("en-US", {
       year: "numeric",
@@ -86,6 +86,7 @@
               type="button"
               onclick={() => {
                 TempUser = user;
+                form = { ...form, error: null };
                 openChatRequest = true;
               }}
               class="inline-flex items-center justify-center rounded-lg bg-black px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2"
@@ -123,8 +124,12 @@
     use:enhance={() => {
       return async ({ update, result }) => {
         await update();
-        if (result.type == "success") {
+
+        if (result.type === "success") {
           openChatRequest = false;
+        } else {
+          // failure أو error
+          openChatRequest = true;
         }
       };
     }}
@@ -172,5 +177,11 @@
         Send Request
       </button>
     </div>
+
+    {#if form?.error}
+      <h1 class="text-xs text-red-600">
+        {form.error.toLowerCase()}
+      </h1>
+    {/if}
   </form>
 </Modal>

@@ -32,11 +32,14 @@ export const actions: Actions = {
           "message": message
         })
       })
+
       if (!res.ok) {
-        return { error: true }
+        const data = await res.json()
+        return { error: data.message }
       }
     } catch (err) {
       return { error: true }
     }
+    return { success: true }
   }
 }
