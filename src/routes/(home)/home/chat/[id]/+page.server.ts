@@ -21,7 +21,6 @@ export const load: PageServerLoad = async ({ params, cookies, fetch }) => {
       body: JSON.stringify({ "user2_id": Number(params.id) })
     })
     const data1 = await res.json()
-    console.log(data1.data.user)
     reciver = data1.data.user
     const res2 = await fetch(`${BASE_URL}/messages?convid=${Number(data1.data.id)}`, {
       method: "GET", headers: {

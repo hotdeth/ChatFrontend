@@ -10,7 +10,6 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
     }
   })
   const chats = await res2.json()
-  console.log(chats)
   return { chats: chats }
 }
 
