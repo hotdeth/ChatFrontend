@@ -9,8 +9,8 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
       "Authorization": `Bearer ${cookies.get('access_token')}`
     }
   })
-
   const chats = await res2.json()
+  console.log(chats)
   return { chats: chats }
 }
 

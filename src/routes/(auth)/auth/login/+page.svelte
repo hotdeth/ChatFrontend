@@ -77,7 +77,7 @@
         </a>
       </p>
       {#if form?.error}
-        <p class="text-red-400 text-center text-sm">{form.error}</p>
+        <p class="text-red-400 text-center text-sm">{form.error.toLowerCase()}</p>
       {/if}
     </div>
   </div>

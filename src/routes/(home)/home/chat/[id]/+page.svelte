@@ -195,7 +195,7 @@
       class="sticky top-0 z-10 flex items-center gap-4 border-b border-gray-200 bg-white px-4 py-3 sm:px-6"
     >
       <a
-        href="/home/friends"
+        href="/home/chats"
         class="flex h-10 w-10 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-black"
       >
         <svg
@@ -216,7 +216,7 @@
       <div
         class="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-black ring-1 ring-gray-200"
       >
-        {data.user?.name?.charAt(0)?.toUpperCase() || "U"}
+        {data.recive?.name?.charAt(0)?.toUpperCase() || "U"}
         <div
           class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white {isReceiverOnline
             ? 'bg-black'
@@ -226,7 +226,7 @@
 
       <div class="flex-1 min-w-0">
         <h1 class="truncate text-base font-bold tracking-tight text-black">
-          {data.user?.name || "User"}
+          {data.recive?.name || "User"}
         </h1>
         <p
           class="truncate text-xs font-medium {isReceiverOnline
