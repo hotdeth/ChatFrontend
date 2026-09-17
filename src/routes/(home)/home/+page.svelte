@@ -9,7 +9,7 @@
   <meta name="description" content="Development and testing environment" />
 </svelte:head>
 
-<div class="min-h-screen bg-white text-gray-950">
+<div class="min-h-screen bg-white dark:bg-black text-gray-950 dark:text-white">
   <main class="mx-auto w-full max-w-6xl px-6 py-6">
     <!-- Navbar -->
     <header

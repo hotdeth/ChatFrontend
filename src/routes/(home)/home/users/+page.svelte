@@ -35,11 +35,11 @@
   };
 </script>
 
-<div class="min-h-screen bg-white px-4 py-10 sm:px-6 lg:px-8">
+<div class="min-h-screen bg-white dark:bg-black px-4 py-10 sm:px-6 lg:px-8">
   <div class="mx-auto max-w-5xl">
     <!-- Header -->
     <div class="mb-10">
-      <h1 class="text-3xl font-bold tracking-tight text-black">Users</h1>
+      <h1 class="text-3xl font-bold tracking-tight text-black dark:text-gray-300">Users</h1>
       <p class="mt-2 text-sm text-gray-500">
         Discover and connect with other users.
       </p>

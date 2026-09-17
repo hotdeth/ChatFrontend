@@ -10,7 +10,11 @@
     HomeSolid,
     CloseOutline,
     PaperClipOutline,
+    SunSolid,
+    MoonSolid,
   } from "flowbite-svelte-icons";
+  import { Button } from "flowbite-svelte";
+  import { mode, toggleMode } from "mode-watcher";
 
   interface Link {
     name: string;
@@ -32,24 +36,32 @@
 </script>
 
 <nav
-  class="sticky top-0 z-50 border-b border-gray-200 bg-white/90 backdrop-blur-md"
+  class="sticky top-0 z-50 border-b border-gray-200 bg-white/90 dark:bg-black backdrop-blur-md"
 >
   <div
     class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8"
   >
-    <!-- Logo -->
-    <a
-      href="/home"
-      class="flex items-center gap-3 text-lg font-bold tracking-tight text-black"
-    >
-      <div
-        class="flex h-9 w-9 items-center justify-center rounded-lg bg-black text-white shadow-sm"
+    <div class="space-x-3 flex justify-center items-center">
+      <!-- Logo -->
+      <a
+        href="/home"
+        class="flex items-center gap-3 text-lg font-bold tracking-tight text-black"
       >
-        <MessagesSolid class="h-5 w-5" />
-      </div>
-      <span>Social</span>
-    </a>
-
+        <div
+          class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-200 shadow-sm"
+        >
+          <MessagesSolid class="text-blue-500 h-5 w-5" />
+        </div>
+        <span class="text-blue-500">Social</span>
+      </a>
+      <button type="button" onclick={() => toggleMode()}>
+        {#if mode.current == "dark"}
+          <SunSolid color="yellow" />
+        {:else}
+          <MoonSolid color="blue" />
+        {/if}
+      </button>
+    </div>
     <!-- Desktop navigation -->
     <div class="hidden items-center gap-2 md:flex">
       {#each links as link}

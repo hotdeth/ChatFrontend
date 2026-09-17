@@ -3,11 +3,11 @@
   import { enhance } from "$app/forms";
 </script>
 
-<div class="min-h-screen bg-white px-4 py-10 sm:px-6 lg:px-8">
+<div class="min-h-screen bg-white dark:bg-black px-4 py-10 sm:px-6 lg:px-8">
   <div class="mx-auto max-w-5xl">
     <!-- Header (Added to match Friends and Users pages) -->
     <div class="mb-10">
-      <h1 class="text-3xl font-bold tracking-tight text-black">Requests</h1>
+      <h1 class="text-3xl font-bold tracking-tight text-black dark:text-gray-300">Requests</h1>
       <p class="mt-2 text-sm text-gray-500">
         Review and manage your pending requests.
       </p>
